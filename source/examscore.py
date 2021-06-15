@@ -16,6 +16,7 @@ immediate_feeback_late_score = []
 # Constants
 early_time = -24
 exam2_path = "../data/Sp21_Physics_211_HE2_data.csv"
+exam3_path = "../data/Sp21_Physics_211_HE3_data.csv"
 
 def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data as a List
 	with open(path) as file:
@@ -40,7 +41,7 @@ def parse_file(): # Dividing the Data into appropriate bins
 				else:
 					immediate_feeback_late_score.append(float(row[1]))
 
-def draw_graph(): # Drawing Hour Exam 2 Score by Feedback
+def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	# Calculating the Means
 	delayed_means = [np.mean(delayed_feedback_early_score), np.mean(delayed_feedback_late_score)]
 	immediate_means = [np.mean(immediate_feeback_early_score), np.mean(immediate_feeback_late_score)]
@@ -62,16 +63,21 @@ def draw_graph(): # Drawing Hour Exam 2 Score by Feedback
 	plt.ylabel("Exam Score")
 	labels = ["PT Early", "PT Late", "No PT"]
 	plt.xticks([1.05, 1.3, 1.5], labels)
-	plt.title("Hour Exam 2 Score by Feedback")
+	plt.title(name)
 
 	# Creating the Color Ledgend
 	green_patch = mpatches.Patch(color='green', label='Delayed')
 	orange_patch = mpatches.Patch(color='orange', label='Immediate')
-	gray_patch = mpatches.Patch(color='gray', label='Immediate')
+	gray_patch = mpatches.Patch(color='gray', label='None')
 	plt.legend(bbox_to_anchor=(0.82, 0.3), loc='upper left', borderaxespad=0, handles=[green_patch, orange_patch, gray_patch], prop={"size":8})
 
+	plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
 r_list = store_file_data(exam2_path)
 parse_file()
-draw_graph()
+draw_graph("Hour Exam 2 Score by Feedback")
+
+r_list = store_file_data(exam3_path)
+parse_file()
+draw_graph("Hour Exam 3 Score by Feedback")
