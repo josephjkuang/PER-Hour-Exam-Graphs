@@ -31,24 +31,26 @@ def parse_file(): # Dividing the Data into appropriate bins
 			if row[8] == "NULL":
 				if float(row[3]) > 100: # This is for typos with extra zeros
 						row[3] = 100
-
-				no_feedback_bias.append(float(row[1]) - float(row[3]))
+				if float(row[1]) - float(row[3]) < 0:
+					no_feedback_bias.append(abs(float(row[1]) - float(row[3])))
 			elif float(row[8]) <= early_time:
 				if float(row[3]) > 100: # This is for typos with extra zeros
 						row[3] = 100
 
-				if int(row[5]) == 1:
-					delayed_feedback_early_bias.append(float(row[1]) - float(row[3]))
-				else:
-					immediate_feeback_early_bias.append(float(row[1]) - float(row[3]))
+				if float(row[1]) - float(row[3]) < 0:
+					if int(row[5]) == 1:
+						delayed_feedback_early_bias.append(abs(float(row[1]) - float(row[3])))
+					else:
+						immediate_feeback_early_bias.append(abs(float(row[1]) - float(row[3])))
 			elif float(row[8]) < 0: # Sometimes students finish practice after exam time?
 				if float(row[3]) > 100: # This is for typos with extra zeros
 						row[3] = 100
 
-				if int(row[5]) == 1:
-					delayed_feedback_late_bias.append(float(row[1]) - float(row[3]))
-				else:
-					immediate_feeback_late_bias.append(float(row[1]) - float(row[3]))
+				if float(row[1]) - float(row[3]) < 0:
+					if int(row[5]) == 1:
+						delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
+					else:
+						immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
 
 def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	# Calculating the Means
@@ -60,6 +62,10 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	delayed_errors = [stats.sem(delayed_feedback_early_bias), stats.sem(delayed_feedback_late_bias)]
 	immediate_errors = [stats.sem(immediate_feeback_early_bias), stats.sem(immediate_feeback_late_bias)]
 	no_errors = [stats.sem(no_feedback_bias)]
+
+	print(delayed_means)
+	print()
+	print(immediate_means)
 
 	# Drawing the Bars
 	plt.style.use('classic')
@@ -80,14 +86,21 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	gray_patch = mpatches.Patch(color='gray', label='None')
 	plt.legend(bbox_to_anchor=(0.82, 0.3), loc='upper left', borderaxespad=0, handles=[green_patch, orange_patch, gray_patch], prop={"size":8})
 
-	# plt.savefig("../graphs/" + name + ".png")
+	plt.savefig("../graphs/" + name + ".png")
 	plt.show()
+
+def clear_lists():
+	delayed_feedback_early_bias.clear()
+	delayed_feedback_late_bias.clear()
+	immediate_feeback_early_bias.clear()
+	immediate_feeback_late_bias.clear()
+	no_feedback_bias.clear()
 
 r_list = store_file_data(exam2_path)
 parse_file()
-draw_graph("Hour Exam 2 Metacognitive Bias of Underestimators")
-alterlist()
+draw_graph("aHour Exam 2 Metacognitive Bias of Underestimators")
+clear_lists()
 
 r_list = store_file_data(exam3_path)
 parse_file()
-draw_graph("Hour Exam 3 Metacognitive Bias of Underestimators")
+draw_graph("Hour Exam 3 Metacognitive Bias of Overestimators")

@@ -46,7 +46,9 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	delayed_means = [np.mean(delayed_feedback_early_score), np.mean(delayed_feedback_late_score)]
 	immediate_means = [np.mean(immediate_feeback_early_score), np.mean(immediate_feeback_late_score)]
 	no_means = [np.mean(no_feedback_score)]
-
+	print(delayed_means)
+	print()
+	print(immediate_means)
 	# Calculating the Error Bars
 	delayed_errors = [stats.sem(delayed_feedback_early_score), stats.sem(delayed_feedback_late_score)]
 	immediate_errors = [stats.sem(immediate_feeback_early_score), stats.sem(immediate_feeback_late_score)]
@@ -74,9 +76,17 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
+def clear_lists():
+	delayed_feedback_early_score.clear()
+	delayed_feedback_late_score.clear()
+	no_feedback_score.clear()
+	immediate_feeback_early_score.clear()
+	immediate_feeback_late_score.clear()
+
 r_list = store_file_data(exam2_path)
 parse_file()
 draw_graph("Hour Exam 2 Score by Feedback")
+clear_lists()
 
 r_list = store_file_data(exam3_path)
 parse_file()
