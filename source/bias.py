@@ -63,9 +63,11 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	immediate_errors = [stats.sem(immediate_feeback_early_bias), stats.sem(immediate_feeback_late_bias)]
 	no_errors = [stats.sem(no_feedback_bias)]
 
-	print(delayed_means)
-	print()
-	print(immediate_means)
+	# print(delayed_means)
+	# print()
+	# print(immediate_means)
+	# print()
+	# print(no_means)
 
 	# Drawing the Bars
 	plt.style.use('classic')
@@ -98,9 +100,22 @@ def clear_lists():
 
 r_list = store_file_data(exam2_path)
 parse_file()
-draw_graph("aHour Exam 2 Metacognitive Bias of Underestimators")
+draw_graph("Hour Exam 2 Metacognitive Bias of Underestimators")
 clear_lists()
 
 r_list = store_file_data(exam3_path)
 parse_file()
-draw_graph("Hour Exam 3 Metacognitive Bias of Overestimators")
+draw_graph("Hour Exam 3 Metacognitive Bias of Underestimators")
+
+# r_list = store_file_data(exam2_path)
+# parse_file()
+# r_list = store_file_data(exam3_path)
+# parse_file()
+# draw_graph("Combined Metacognitive Bias of Overestimators")
+
+# print()
+# print(len(delayed_feedback_early_bias))
+# print(len(immediate_feeback_early_bias))
+# print(len(delayed_feedback_late_bias))
+# print(len(immediate_feeback_late_bias))
+# print(len(no_feedback_bias))
