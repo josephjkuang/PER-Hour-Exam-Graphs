@@ -77,7 +77,7 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	gray_patch = mpatches.Patch(color='gray', label='None')
 	plt.legend(bbox_to_anchor=(0.82, 0.3), loc='upper left', borderaxespad=0, handles=[green_patch, orange_patch, gray_patch], prop={"size":8})
 
-	plt.savefig("../graphs/" + name + ".png")
+	# plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
 def clear_lists():
