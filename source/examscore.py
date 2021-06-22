@@ -27,19 +27,24 @@ def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data 
 
 def parse_file(): # Dividing the Data into appropriate bins
 	for row in r_list:
-		if row[1] != "NULL" and row[1] != "EX": # Why are the EX's?
-			if row[8] == "NULL":
-				no_feedback_score.append(float(row[1]))
-			elif float(row[8]) <= early_time:
-				if int(row[5]) == 1:
-					delayed_feedback_early_score.append(float(row[1]))
-				else:
-					immediate_feeback_early_score.append(float(row[1]))
-			elif float(row[8]) < 0: # Sometimes students finish practice after exam time?
-				if int(row[5]) == 1:
-					delayed_feedback_late_score.append(float(row[1]))
-				else:
-					immediate_feeback_late_score.append(float(row[1]))
+		if row[5] == "NULL" or float(row[6]) == 0: # People who did not have any practice questions done
+			no_feedback_score.append(float(row[1]))
+		elif row[8] == "NULL" and float(row[6]) > 0: # People who did less than 20 questions late
+			if row[5] == "1":
+				delayed_feedback_late_score.append(float(row[1]))
+			else:
+				immediate_feeback_late_score.append(float(row[1]))
+		elif float(row[8]) <= early_time: # People who did 20 practice questions early
+			if row[5] == "1":
+				delayed_feedback_early_score.append(float(row[1]))
+			else:
+				immediate_feeback_early_score.append(float(row[1]))
+		elif float(row[8]) <= 0: # People who did 20 practice questions late
+			if row[5] == "1":
+				delayed_feedback_late_score.append(float(row[1]))
+			else:
+				immediate_feeback_late_score.append(float(row[1]))
+		# People who have questions done after the exam has finished are not included
 
 def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	# Calculating the Means
@@ -47,11 +52,11 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	immediate_means = [np.mean(immediate_feeback_early_score), np.mean(immediate_feeback_late_score)]
 	no_means = [np.mean(no_feedback_score)]
 
-	# print(delayed_means)
-	# print()
-	# print(immediate_means)
-	# print()
-	# print(no_means)
+	print(delayed_means)
+	print()
+	print(immediate_means)
+	print()
+	print(no_means)
 
 	# Calculating the Error Bars
 	delayed_errors = [stats.sem(delayed_feedback_early_score), stats.sem(delayed_feedback_late_score)]
@@ -77,7 +82,7 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	gray_patch = mpatches.Patch(color='gray', label='None')
 	plt.legend(bbox_to_anchor=(0.82, 0.3), loc='upper left', borderaxespad=0, handles=[green_patch, orange_patch, gray_patch], prop={"size":8})
 
-	# plt.savefig("../graphs/" + name + ".png")
+	plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
 def clear_lists():
@@ -87,24 +92,24 @@ def clear_lists():
 	immediate_feeback_early_score.clear()
 	immediate_feeback_late_score.clear()
 
-r_list = store_file_data(exam2_path)
-parse_file()
-draw_graph("Hour Exam 2 Score by Feedback")
-clear_lists()
-
-r_list = store_file_data(exam3_path)
-parse_file()
-draw_graph("Hour Exam 3 Score by Feedback")
-
 # r_list = store_file_data(exam2_path)
 # parse_file()
+# draw_graph("Hour Exam 2 Score by Feedback")
+# clear_lists()
+
 # r_list = store_file_data(exam3_path)
 # parse_file()
-# draw_graph("Combined Hour Exam 2 and 3 Score by Feedback")
+# draw_graph("Hour Exam 3 Score by Feedback")
 
-# print()
-# print(len(delayed_feedback_early_score))
-# print(len(immediate_feeback_early_score))
-# print(len(delayed_feedback_late_score))
-# print(len(immediate_feeback_late_score))
-# print(len(no_feedback_score))
+r_list = store_file_data(exam2_path)
+parse_file()
+r_list = store_file_data(exam3_path)
+parse_file()
+draw_graph("Combined Hour Exam 2 and 3 Score by Feedback")
+
+print()
+print(len(delayed_feedback_early_score))
+print(len(immediate_feeback_early_score))
+print(len(delayed_feedback_late_score))
+print(len(immediate_feeback_late_score))
+print(len(no_feedback_score))
