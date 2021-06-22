@@ -27,30 +27,26 @@ def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data 
 
 def parse_file(): # Dividing the Data into appropriate bins
 	for row in r_list:
-		if row[1] != "NULL" and row[1] != "EX" and row[3] != "NULL": # Why are the EX's?
-			if row[8] == "NULL":
-				if float(row[3]) > 100: # This is for typos with extra zeros
-						row[3] = 100
-				if float(row[1]) - float(row[3]) > 0:
+		if row[3] != "NULL": # Removing people without predictions
+			if float(row[1]) - float(row[3]) > 0: # Filters for Underestimators
+				if row[5] == "NULL" or float(row[6]) == 0: # People who did not have any practice questions done
 					no_feedback_bias.append(abs(float(row[1]) - float(row[3])))
-			elif float(row[8]) <= early_time:
-				if float(row[3]) > 100: # This is for typos with extra zeros
-						row[3] = 100
-
-				if float(row[1]) - float(row[3]) > 0:
-					if int(row[5]) == 1:
-						delayed_feedback_early_bias.append(abs(float(row[1]) - float(row[3])))
-					else:
-						immediate_feeback_early_bias.append(abs(float(row[1]) - float(row[3])))
-			elif float(row[8]) < 0: # Sometimes students finish practice after exam time?
-				if float(row[3]) > 100: # This is for typos with extra zeros
-						row[3] = 100
-
-				if float(row[1]) - float(row[3]) > 0:
-					if int(row[5]) == 1:
+				elif row[8] == "NULL" and float(row[6]) > 0: # People who did less than 20 questions late
+					if row[5] == "1":
 						delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
 					else:
 						immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
+				elif float(row[8]) <= early_time: # People who did 20 practice questions early
+					if row[5] == "1":
+						delayed_feedback_early_bias.append(abs(float(row[1]) - float(row[3])))
+					else:
+						immediate_feeback_early_bias.append(abs(float(row[1]) - float(row[3])))
+				elif float(row[8]) <= 0: # People who did 20 practice questions late
+					if row[5] == "1":
+						delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
+					else:
+						immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
+
 
 def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	# Calculating the Means
@@ -63,11 +59,11 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	immediate_errors = [stats.sem(immediate_feeback_early_bias), stats.sem(immediate_feeback_late_bias)]
 	no_errors = [stats.sem(no_feedback_bias)]
 
-	# print(delayed_means)
-	# print()
-	# print(immediate_means)
-	# print()
-	# print(no_means)
+	print(delayed_means)
+	print()
+	print(immediate_means)
+	print()
+	print(no_means)
 
 	# Drawing the Bars
 	plt.style.use('classic')
@@ -124,20 +120,20 @@ def remove_outliers():
 		if no_feedback_bias[len(no_feedback_bias) - i - 1] > outside:
 			no_feedback_bias.remove(no_feedback_bias[len(no_feedback_bias) - i - 1])
 
-r_list = store_file_data(exam2_path)
-parse_file()
-remove_outliers()
-draw_graph("Filtered Hour Exam 2 Metacognitive Bias of Underestimators")
-clear_lists()
+# r_list = store_file_data(exam2_path)
+# parse_file()
+# remove_outliers()
+# draw_graph("Filtered Hour Exam 2 Metacognitive Bias for Underestimators")
+# clear_lists()
 
 r_list = store_file_data(exam3_path)
 parse_file()
 remove_outliers()
-draw_graph("Filtered Hour Exam 3 Metacognitive Bias of Underestimators")
+draw_graph("Filtered Hour Exam 3 Metacognitive Bias for Underestimators")
 
-# print()
-# print(len(delayed_feedback_early_bias))
-# print(len(immediate_feeback_early_bias))
-# print(len(delayed_feedback_late_bias))
-# print(len(immediate_feeback_late_bias))
-# print(len(no_feedback_bias))
+print()
+print(len(delayed_feedback_early_bias))
+print(len(immediate_feeback_early_bias))
+print(len(delayed_feedback_late_bias))
+print(len(immediate_feeback_late_bias))
+print(len(no_feedback_bias))

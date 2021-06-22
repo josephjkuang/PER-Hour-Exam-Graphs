@@ -82,7 +82,7 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	gray_patch = mpatches.Patch(color='gray', label='None')
 	plt.legend(bbox_to_anchor=(0.82, 0.3), loc='upper left', borderaxespad=0, handles=[green_patch, orange_patch, gray_patch], prop={"size":8})
 
-	plt.savefig("../graphs/" + name + ".png")
+	# plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
 def clear_lists():
@@ -92,20 +92,20 @@ def clear_lists():
 	immediate_feeback_early_score.clear()
 	immediate_feeback_late_score.clear()
 
-# r_list = store_file_data(exam2_path)
-# parse_file()
-# draw_graph("Hour Exam 2 Score by Feedback")
-# clear_lists()
-
-# r_list = store_file_data(exam3_path)
-# parse_file()
-# draw_graph("Hour Exam 3 Score by Feedback")
-
 r_list = store_file_data(exam2_path)
 parse_file()
+draw_graph("Hour Exam 2 Score by Feedback")
+clear_lists()
+
 r_list = store_file_data(exam3_path)
 parse_file()
-draw_graph("Combined Hour Exam 2 and 3 Score by Feedback")
+draw_graph("Hour Exam 3 Score by Feedback")
+
+# r_list = store_file_data(exam2_path)
+# parse_file()
+# r_list = store_file_data(exam3_path)
+# parse_file()
+# draw_graph("Combined Hour Exam 2 and 3 Score by Feedback")
 
 print()
 print(len(delayed_feedback_early_score))
