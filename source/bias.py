@@ -28,24 +28,24 @@ def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data 
 def parse_file(): # Dividing the Data into appropriate bins
 	for row in r_list:
 		if row[3] != "NULL": # Removing people without predictions
-			if float(row[1]) - float(row[3]) > 0: # Filters for Underestimators
-				if row[5] == "NULL" or float(row[6]) == 0: # People who did not have any practice questions done
-					no_feedback_bias.append(abs(float(row[1]) - float(row[3])))
-				elif row[8] == "NULL" and float(row[6]) > 0: # People who did less than 20 questions late
-					if row[5] == "1":
-						delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
-					else:
-						immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
-				elif float(row[8]) <= early_time: # People who did 20 practice questions early
-					if row[5] == "1":
-						delayed_feedback_early_bias.append(abs(float(row[1]) - float(row[3])))
-					else:
-						immediate_feeback_early_bias.append(abs(float(row[1]) - float(row[3])))
-				elif float(row[8]) <= 0: # People who did 20 practice questions late
-					if row[5] == "1":
-						delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
-					else:
-						immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
+			# if float(row[1]) - float(row[3]) > 0: # Filters for Underestimators
+			if row[5] == "NULL" or float(row[6]) == 0: # People who did not have any practice questions done
+				no_feedback_bias.append(abs(float(row[1]) - float(row[3])))
+			elif row[8] == "NULL" and float(row[6]) > 0: # People who did less than 20 questions late
+				if row[5] == "1":
+					delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
+				else:
+					immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
+			elif float(row[8]) <= early_time: # People who did 20 practice questions early
+				if row[5] == "1":
+					delayed_feedback_early_bias.append(abs(float(row[1]) - float(row[3])))
+				else:
+					immediate_feeback_early_bias.append(abs(float(row[1]) - float(row[3])))
+			elif float(row[8]) <= 0: # People who did 20 practice questions late
+				if row[5] == "1":
+					delayed_feedback_late_bias.append(abs(float(row[1]) - float(row[3])))
+				else:
+					immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
 
 def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	# Calculating the Means
@@ -83,7 +83,7 @@ def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	gray_patch = mpatches.Patch(color='gray', label='None')
 	plt.legend(bbox_to_anchor=(0.82, 0.3), loc='upper left', borderaxespad=0, handles=[green_patch, orange_patch, gray_patch], prop={"size":8})
 
-	plt.savefig("../graphs/" + name + ".png")
+	# plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
 def clear_lists():
@@ -98,15 +98,15 @@ def clear_lists():
 # draw_graph("Hour Exam 2 Metacognitive Bias for Underestimators")
 # clear_lists()
 
-# r_list = store_file_data(exam3_path)
-# parse_file()
-# draw_graph("Hour Exam 3 Metacognitive Bias for Underestimators")
-
-r_list = store_file_data(exam2_path)
-parse_file()
 r_list = store_file_data(exam3_path)
 parse_file()
-draw_graph("Combined Metacognitive Bias for Underestimators")
+draw_graph("Hour Exam 3 Metacognitive Bias for Underestimators")
+
+# r_list = store_file_data(exam2_path)
+# parse_file()
+# r_list = store_file_data(exam3_path)
+# parse_file()
+# draw_graph("Combined Metacognitive Bias for Underestimators")
 
 print()
 print(len(delayed_feedback_early_bias))
