@@ -36,35 +36,44 @@ def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data 
 	return r_list
 
 def parse_file(list2, list3): # Dividing the Data into appropriate bins
+	count = 0
 	for i in range(len(list2) - 1):
-		if list2[i][1] != "NULL" and list3[i][1] != "NULL":
-			exam2_scores.append(float(list2[i][1]))
-			exam3_scores.append(float(list3[i][1]))
+		row = list3[0]
+		for j in range(len(list3) - 1):
+			if list2[i][0] == list3[j][0]:
+				row = list3[j]
+				list3.pop(j)
+				break
 
-			difference.append(float(list3[i][1]) - float(list2[i][1]))
+		if list2[i][1] != "NULL" and row[1] != "NULL" and list2[i][0] == row[0]:
+			exam2_scores.append(float(list2[i][1]))
+			exam3_scores.append(float(row[1]))
+
+			difference.append(float(row[1]) - float(list2[i][1]))
 			counting_numbers.append(i)
 
 			if list2[i][8] != "NULL" and float(list2[i][8]) <= early_time:
-				if list3[i][8] != "NULL" and float(list3[i][8]) <= early_time:
-					both_early.append(float(list3[i][1]) - float(list2[i][1]))
+				if row[8] != "NULL" and float(row[8]) <= early_time:
+					both_early.append(float(row[1]) - float(list2[i][1]))
 				else:
-					first_early.append(float(list3[i][1]) - float(list2[i][1]))
-					one_early.append(float(list3[i][1]) - float(list2[i][1]))
-			elif list3[i][8] != "NULL" and float(list3[i][8]) <= early_time:
-				last_early.append(float(list3[i][1]) - float(list2[i][1]))
-				one_early.append(float(list3[i][1]) - float(list2[i][1]))
-			elif float(list2[i][6]) == 0 and float(list3[i][6]):
-				no_pt.append(float(list3[i][1]) - float(list2[i][1]))
+					first_early.append(float(row[1]) - float(list2[i][1]))
+					one_early.append(float(row[1]) - float(list2[i][1]))
+			elif row[8] != "NULL" and float(row[8]) <= early_time:
+				last_early.append(float(row[1]) - float(list2[i][1]))
+				one_early.append(float(row[1]) - float(list2[i][1]))
+			elif float(list2[i][6]) == 0 and float(row[6]):
+				no_pt.append(float(row[1]) - float(list2[i][1]))
 			else:
-				not_early.append(float(list3[i][1]) - float(list2[i][1]))
+				not_early.append(float(row[1]) - float(list2[i][1]))
 
-			if list3[i][5] != "NULL":
-				if list3[i][5] != "1":
-					delayed_last.append(float(list3[i][1]) - float(list2[i][1]))
+			if row[5] != "NULL":
+				if row[5] != "1":
+					delayed_last.append(float(row[1]) - float(list2[i][1]))
 				else:
-					immediate_last.append(float(list3[i][1]) - float(list2[i][1]))
+					immediate_last.append(float(row[1]) - float(list2[i][1]))
 		else:
-			print(list2[i][0])
+			count += 1
+	print(str(count) + " ids were not found between both exams\n")
 
 def draw_graph(name):
 	# Scatter Plot
@@ -101,9 +110,9 @@ def draw_difference(name):
 	# plt.savefig("../graphs/" + name + ".png")
 	plt.show()
 
-def draw_histogram(name, list):
+def draw_histogram(name, list, color):
 	def_bins = np.linspace(-80, 80, num=33) 
-	n, bins, patches = plt.hist(list, bins = def_bins, facecolor = 'purple', ec = 'black')
+	n, bins, patches = plt.hist(list, bins = def_bins, facecolor = color, ec = 'black')
 	plt.title(name)
 	plt.xlabel("Score Difference (Exam 3 - Exam 2)")
 	plt.ylabel("Number of Students")
@@ -112,8 +121,10 @@ def draw_histogram(name, list):
 	plt.show()
 	plt.clf()
 
+	print(name)
 	print("Mean: " + str(np.mean(list)))
 	print("Standard Deviation: " + str(np.std(list)))
+	print()
 
 r_list2 = store_file_data(exam2_path)
 r_list3 = store_file_data(exam3_path)
@@ -123,14 +134,15 @@ parse_file(r_list2, r_list3)
 # print("Exam 2 Average: " + str(np.mean(exam2_scores)))
 # print("Exam 3 Average: " + str(np.mean(exam3_scores)))
 
-# draw_difference("Score Change")
+draw_difference("Score Change")
 
-draw_histogram("Score Difference Histogram Expanded", difference)
-# draw_histogram("Both Early Score Difference Histogram Expanded", both_early)
-# draw_histogram("One Early Score Difference Histogram Expanded", one_early)
-# draw_histogram("One Late Score Difference Histogram Expanded", not_early)
-# draw_histogram("No Practice Test Score Difference Histogram Expanded", no_pt)
-# draw_histogram("Delayed Feedback for Exam 3 Score Difference Histogram Expanded", delayed_last)
-# draw_histogram("Immediate Feedback for Exam 3 Score Difference Histogram Expanded", immediate_last)
-# draw_histogram("Early For Exam 2 Score Difference Histogram Expanded", first_early)
-# draw_histogram("Early for Exam 3 Score Difference Histogram Expanded", last_early)
+# draw_histogram("Score Difference Histogram Expanded ", difference, "purple")
+# draw_histogram("Both Early Score Difference Histogram Expanded", both_early, "green")
+# draw_histogram("One Early Score Difference Histogram Expanded", one_early, "blue")
+# draw_histogram("One Late Score Difference Histogram Expanded", not_early, "red")
+# draw_histogram("No Practice Test Score Difference Histogram Expanded", no_pt, "cyan")
+# draw_histogram("Delayed Feedback for Exam 3 Score Difference Histogram Expanded", delayed_last, "yellow")
+# draw_histogram("Immediate Feedback for Exam 3 Score Difference Histogram Expanded", immediate_last, "maroon")
+# draw_histogram("Early For Exam 2 Score Difference Histogram Expanded", first_early, "teal")
+# draw_histogram("Early for Exam 3 Score Difference Histogram Expanded", last_early, "orange")
+
