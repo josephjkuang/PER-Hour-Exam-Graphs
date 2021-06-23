@@ -47,8 +47,6 @@ def parse_file(): # Dividing the Data into appropriate bins
 					else:
 						immediate_feeback_late_bias.append(abs(float(row[1]) - float(row[3])))
 
-
-
 def draw_graph(name): # Drawing Hour Exam 2 Score by Feedback
 	# Calculating the Means
 	delayed_means = [np.mean(delayed_feedback_early_bias), np.mean(delayed_feedback_late_bias)]
