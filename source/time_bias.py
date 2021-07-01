@@ -23,42 +23,50 @@ def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data 
 		labels = r_list.pop(0)
 	return r_list
 
-def parse_file(): # Dividing the Data into appropriate bins
-	for row in r_list:
-		if row[1] != "NULL" and row[1] != "EX" and row[8] != "NULL" and float(row[8]) <= 0:
-			if int(row[5]) == 1:
-				delayed_feedback_time.append(float(row[1]))
-				delayed_feedback_time.append(abs(float(row[8])))
+def store_file_data(path): # Opens the CSV Data and Stores the Returns the Data as a List
+	with open(path) as file:
+		reader = csv.reader(file)
+		r_list = [r for r in reader]  # convert csv file to a python list
+		labels = r_list.pop(0)
+	return r_list
+
+def parse_file(list2, list3): # Dividing the Data into appropriate bins
+	count = 0
+	for i in range(len(list2) - 1):
+		row = list3[0]
+		for j in range(len(list3) - 1):
+			if list2[i][0] == list3[j][0]:
+				row = list3[j]
+				list3.pop(j)
+				break
+
+		if list2[i][1] != "NULL" and row[1] != "NULL" and list2[i][0] == row[0]:
+			exam2_scores.append(float(list2[i][1]))
+			exam3_scores.append(float(row[1]))
+
+			difference.append(float(row[1]) - float(list2[i][1]))
+			counting_numbers.append(i)
+
+			if list2[i][8] != "NULL" and float(list2[i][8]) <= early_time:
+				if row[8] != "NULL" and float(row[8]) <= early_time:
+					both_early.append(float(row[1]) - float(list2[i][1]))
+				else:
+					first_early.append(float(row[1]) - float(list2[i][1]))
+					one_early.append(float(row[1]) - float(list2[i][1]))
+			elif row[8] != "NULL" and float(row[8]) <= early_time:
+				last_early.append(float(row[1]) - float(list2[i][1]))
+				one_early.append(float(row[1]) - float(list2[i][1]))
+			elif float(list2[i][6]) == 0 and float(row[6]):
+				no_pt.append(float(row[1]) - float(list2[i][1]))
 			else:
-				immediate_feeback_time.append(float(row[1]))
-				immediate_feedback_time.append(abs(float(row[8])))
+				not_early.append(float(row[1]) - float(list2[i][1]))
 
-def draw_graph(name):
-	# Scatter Plot
-	plt.scatter(immediate_feedback_time, immediate_feeback_time, alpha=0.5)
-	plt.title(name)
-	plt.xlabel('Hours Before Exam')
-	plt.ylabel('Time')
-
-	# Getting R and Slope
-	result = scipy.stats.linregress(immediate_feedback_time, immediate_feeback_time)
-	r_value = result.rvalue
-	slope = result.slope
-	print("R-value: " + str(r_value))
-	print("R^2 Value: " + str(r_value * r_value))
-	print()
-	print("Slope: " + str(slope))
-
-	# Combining Earlier Result
-	x_line = np.linspace(0, 200, 100) # this creates a list of points for x axis
-	plt.xlim([0, 200]) # this defines the range of the axes
-	plt.ylim([0, 105])
-	plt.plot(x_line, x_line * slope + result.intercept, color='black') # now plot the linear function y = a * x + b
-	plt.savefig("../graphs/" + name + ".png")
-	plt.show()
-
-r_list = store_file_data(exam2_path)
-parse_file()
-# r_list = store_file_data(exam3_path)
-# parse_file()
-draw_graph("Delayed Feedback Score by Time")
+			if row[5] != "NULL":
+				if row[5] != "1":
+					delayed_last.append(float(row[1]) - float(list2[i][1]))
+				else:
+					immediate_last.append(float(row[1]) - float(list2[i][1]))
+		else:
+			count += 1
+	print(str(count) + " ids were not found between both exams\n")
+	

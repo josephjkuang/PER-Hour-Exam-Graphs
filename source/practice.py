@@ -87,4 +87,3 @@ parse_file(r_list)
 # draw_scatter("Delayed Feedback Last Practice Score Verus Exam 3 Score Scatter Plot", delayed_last_practice, delayed_exam)
 # draw_scatter("Immediate Feedback First Practice Score Verus Exam 3 Score Scatter Plot", immediate_first_practice, immediate_exam)
 # draw_scatter("Immediate Feedback Last Practice Score Verus Exam 3 Score Scatter Plot", immediate_last_practice, immediate_exam)
-

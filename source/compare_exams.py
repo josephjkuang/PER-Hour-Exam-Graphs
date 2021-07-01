@@ -145,4 +145,3 @@ draw_difference("Score Change")
 # draw_histogram("Immediate Feedback for Exam 3 Score Difference Histogram Expanded", immediate_last, "maroon")
 # draw_histogram("Early For Exam 2 Score Difference Histogram Expanded", first_early, "teal")
 # draw_histogram("Early for Exam 3 Score Difference Histogram Expanded", last_early, "orange")
-
